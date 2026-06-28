@@ -2423,22 +2423,39 @@ class JiraClient:
                 return json.loads(r.read().decode()) if r.length else {}
 
     def _post_issue(self, fields: dict) -> dict:
-        """Создать issue с автоматическим retry при неизвестных customfield_*.
+        """Создать issue с автоматическим retry при неизвестных customfield_* и parent.
 
-        Jira возвращает 400 с errors={customfield_NNNNN: "not on screen"} —
-        в этом случае убираем проблемные поля и повторяем запрос.
+        Jira возвращает 400 в двух основных случаях:
+          1. errors={customfield_NNNNN: "not on screen"} — убираем поле и повторяем.
+          2. errors={parent: "..."} — в классическом проекте Task не может быть дочерним
+             для Story (только Sub-task). Убираем parent и повторяем запрос без него.
+
+        При любом 400 теперь логируется полный ответ Jira для диагностики.
         """
         import copy
         payload = {"fields": copy.deepcopy(fields)}
-        for attempt in range(4):  # максимум 4 попытки (каждый раз убираем 1+ поле)
+        parent_removed = False
+        for attempt in range(5):  # максимум 5 попыток
             try:
                 if HAS_REQUESTS:
                     resp = self.session.post(
                         f"{self.base_url}/rest/api/3/issue", json=payload, timeout=30
                     )
                     if resp.status_code == 400:
-                        body = resp.json()
+                        try:
+                            body = resp.json()
+                        except Exception:
+                            body = {}
                         errors: dict = body.get("errors", {})
+                        error_msgs: list = body.get("errorMessages", [])
+
+                        # Всегда логируем детали ошибки Jira для диагностики
+                        log.error(
+                            "    Jira 400 details → errors=%s | messages=%s",
+                            errors, error_msgs,
+                        )
+
+                        # Случай 1: недоступные customfield — убираем и повторяем
                         bad_fields = [k for k in errors if k.startswith("customfield_")]
                         if bad_fields:
                             for bf in bad_fields:
@@ -2446,7 +2463,25 @@ class JiraClient:
                                     "    Поле %s недоступно на экране создания — пропускаю.", bf
                                 )
                                 payload["fields"].pop(bf, None)
-                            continue  # повторить без этих полей
+                            continue
+
+                        # Случай 2: ошибка parent (Task не может быть дочерним для Story
+                        # в классическом Jira-проекте — нужен Sub-task).
+                        # Убираем parent и создаём как обычный issue.
+                        parent_error = (
+                            "parent" in errors
+                            or any("parent" in str(m).lower() for m in error_msgs)
+                        )
+                        if parent_error and not parent_removed:
+                            log.warning(
+                                "    Поле 'parent' отклонено Jira — создаю без parent. "
+                                "Совет: в классическом проекте используйте 'Sub-task' "
+                                "вместо 'Task' для дочерних задач."
+                            )
+                            payload["fields"].pop("parent", None)
+                            parent_removed = True
+                            continue
+
                     resp.raise_for_status()
                     return resp.json() if resp.content else {}
                 else:
@@ -2464,7 +2499,7 @@ class JiraClient:
                     with urllib.request.urlopen(req, timeout=30) as r:
                         return json.loads(r.read().decode()) if r.length else {}
             except Exception as exc:
-                if attempt == 3:
+                if attempt == 4:
                     raise
                 log.debug("    Retry %d: %s", attempt + 1, exc)
         raise RuntimeError("Не удалось создать тикет после нескольких попыток")
@@ -2502,7 +2537,49 @@ class JiraClient:
         log.debug("    Используется Sprint field по умолчанию: %s", self._sprint_field)
         return self._sprint_field
 
-    def _put(self, path: str, data: dict) -> None:
+    def discover_subtask_type(self, project_key: str) -> str:
+        """Найти имя типа Sub-task для проекта через create-meta или /issuetype.
+
+        В классическом Jira-проекте иерархия: Epic → Story → Sub-task.
+        Тип «Task» находится на одном уровне с «Story» и не может быть
+        дочерним для Story — нужен именно Sub-task.
+        Кэшируется в self._subtask_type.
+        """
+        if hasattr(self, "_subtask_type"):
+            return self._subtask_type
+
+        self._subtask_type = "Sub-task"  # fallback по умолчанию
+
+        # Попытка 1: через /rest/api/3/issuetype (возвращает все типы инстанса)
+        try:
+            types = self._get("/rest/api/3/issuetype")
+            for it in types:
+                if it.get("subtask", False):
+                    self._subtask_type = it["name"]
+                    log.debug("    Sub-task type (issuetype API): %s", self._subtask_type)
+                    return self._subtask_type
+        except Exception as exc:
+            log.debug("    discover_subtask_type (issuetype): %s", exc)
+
+        # Попытка 2: через createmeta проекта
+        try:
+            data = self._get(
+                f"/rest/api/3/issue/createmeta"
+                f"?projectKeys={project_key}&expand=projects.issuetypes"
+            )
+            for proj in data.get("projects", []):
+                for it in proj.get("issuetypes", []):
+                    if it.get("subtask", False):
+                        self._subtask_type = it["name"]
+                        log.debug("    Sub-task type (createmeta): %s", self._subtask_type)
+                        return self._subtask_type
+        except Exception as exc:
+            log.debug("    discover_subtask_type (createmeta): %s", exc)
+
+        log.debug("    Используется Sub-task type по умолчанию: %s", self._subtask_type)
+        return self._subtask_type
+
+
         url = f"{self.base_url}{path}"
         body = json.dumps(data).encode()
         if HAS_REQUESTS:
@@ -2562,8 +2639,9 @@ class JiraClient:
 
         # Иерархия через parent (работает в Jira Cloud classic и next-gen)
         # Epic — корневой, parent не нужен
-        # Story → Epic, Task → Story
-        if parent_key and issue_type in ("Story", "Task"):
+        # Story → Epic, Sub-task → Story, Task → Story (next-gen) или Epic (classic)
+        _types_with_parent = {"Story", "Task", "Sub-task", "Subtask", "sub-task"}
+        if parent_key and (issue_type in _types_with_parent or issue_type.lower().startswith("sub")):
             fields["parent"] = {"key": parent_key}
 
         # Sprint — используем поле, найденное через create-meta
@@ -2819,6 +2897,11 @@ class IssueCreator:
         sprint_number = task_data.get("sprint")
         sprint_id = self._get_sprint_id(sprint_number)
 
+        # В классическом Jira-проекте «Task» находится на уровне «Story» и НЕ может
+        # быть дочерним для Story. Нужен тип Sub-task (или как он называется в проекте).
+        # discover_subtask_type() автоматически находит правильное имя и кэширует его.
+        issue_type = self.client.discover_subtask_type(self.project_key)
+
         log.info("     🔧 Task: %s (Sprint %s)", summary, sprint_number)
 
         if self.dry_run:
@@ -2828,7 +2911,7 @@ class IssueCreator:
         try:
             self.client.create_issue(
                 project_key=self.project_key,
-                issue_type="Task",
+                issue_type=issue_type,
                 summary=summary,
                 description=task_data.get("description", ""),
                 parent_key=story_key,
