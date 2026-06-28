@@ -2895,12 +2895,16 @@ class IssueCreator:
     def _process_task(self, task_data: dict, story_key: str, epic_key: str) -> None:
         summary = task_data["summary"]
         sprint_number = task_data.get("sprint")
-        sprint_id = self._get_sprint_id(sprint_number)
 
         # В классическом Jira-проекте «Task» находится на уровне «Story» и НЕ может
         # быть дочерним для Story. Нужен тип Sub-task (или как он называется в проекте).
         # discover_subtask_type() автоматически находит правильное имя и кэширует его.
         issue_type = self.client.discover_subtask_type(self.project_key)
+
+        # Sub-tasks наследуют спринт у родительской Story — передавать sprint_id
+        # не нужно (Jira вернёт 400, если попытаться установить его явно).
+        is_subtask = issue_type.lower().replace("-", "").replace(" ", "") in ("subtask",)
+        sprint_id = None if is_subtask else self._get_sprint_id(sprint_number)
 
         log.info("     🔧 Task: %s (Sprint %s)", summary, sprint_number)
 
