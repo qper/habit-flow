@@ -2504,15 +2504,82 @@ class JiraClient:
     # ------------------------------------------------------------------
 
     def get_board_id(self, project_key: str) -> Optional[int]:
-        """Получить ID первой Scrum-доски проекта."""
-        try:
-            data = self._get(f"/rest/agile/1.0/board?projectKeyOrId={project_key}&type=scrum")
-            values = data.get("values", [])
-            if values:
-                return values[0]["id"]
-        except Exception as exc:
-            log.warning("Не удалось получить board_id: %s", exc)
+        """Получить ID первой Scrum-доски проекта (с fallback без фильтра по типу)."""
+        # Попытка 1: явно указать тип scrum
+        for url in [
+            f"/rest/agile/1.0/board?projectKeyOrId={project_key}&type=scrum",
+            f"/rest/agile/1.0/board?projectKeyOrId={project_key}",
+        ]:
+            try:
+                data = self._get(url)
+                values = data.get("values", [])
+                if not values:
+                    continue
+                # Предпочитаем scrum-доску, иначе берём первую
+                for board in values:
+                    if board.get("type", "").lower() == "scrum":
+                        log.debug("  Найдена Scrum-доска: %s (id=%s)", board.get("name"), board["id"])
+                        return board["id"]
+                # Fallback: первая попавшаяся доска
+                board = values[0]
+                log.debug("  Найдена доска (тип %s): %s (id=%s)",
+                          board.get("type"), board.get("name"), board["id"])
+                return board["id"]
+            except Exception as exc:
+                log.debug("  Board search %s: %s", url, exc)
         return None
+
+    def get_project_id(self, project_key: str) -> Optional[str]:
+        """Получить числовой ID проекта по ключу."""
+        try:
+            data = self._get(f"/rest/api/3/project/{project_key}")
+            return str(data.get("id", ""))
+        except Exception as exc:
+            log.warning("Не удалось получить project ID: %s", exc)
+        return None
+
+    def create_scrum_board(self, project_key: str, board_name: Optional[str] = None) -> Optional[int]:
+        """Создать Scrum-доску для проекта. Возвращает ID созданной доски."""
+        name = board_name or f"{project_key} board"
+
+        # Шаг 1: создать фильтр
+        filter_name = f"Filter for {name}"
+        jql = f"project = {project_key} ORDER BY created DESC"
+        log.info("   Создаю фильтр: %s", filter_name)
+        try:
+            filter_data = self._post("/rest/api/3/filter", {
+                "name": filter_name,
+                "description": f"Автоматически создан для HabitFlow Scrum board [{project_key}]",
+                "jql": jql,
+                "favourite": False,
+                "sharePermissions": [{"type": "loggedin"}],
+            })
+            filter_id = filter_data.get("id")
+            if not filter_id:
+                log.error("   Фильтр создан, но ID не получен: %s", filter_data)
+                return None
+            log.info("   ✅ Фильтр создан (id=%s)", filter_id)
+        except Exception as exc:
+            log.error("   ❌ Не удалось создать фильтр: %s", exc)
+            return None
+
+        # Шаг 2: создать доску
+        log.info("   Создаю Scrum-доску: %s", name)
+        try:
+            board_data = self._post("/rest/agile/1.0/board", {
+                "name": name,
+                "type": "scrum",
+                "filterId": filter_id,
+            })
+            board_id = board_data.get("id")
+            if not board_id:
+                log.error("   Доска создана, но ID не получен: %s", board_data)
+                return None
+            log.info("   ✅ Scrum-доска создана: %s (id=%s)", name, board_id)
+            return board_id
+        except Exception as exc:
+            log.error("   ❌ Не удалось создать Scrum-доску: %s", exc)
+            return None
 
     def get_sprints(self, board_id: int) -> list:
         """Получить все спринты доски."""
@@ -2568,23 +2635,26 @@ class IssueCreator:
 
     def __init__(
         self,
-        client: JiraClient,
+        client: "JiraClient",
         project_key: str,
-        board_id: Optional[int],
+        board_id: "Optional[int]",
         dry_run: bool = False,
+        issues: "Optional[list]" = None,
     ):
         self.client = client
         self.project_key = project_key
         self.board_id = board_id
         self.dry_run = dry_run
+        # Снимаем копию сразу, чтобы не зависеть от изменений глобального списка
+        self.issues: list = list(issues) if issues is not None else list(ISSUES)
 
         # Кэш спринтов: номер → id
-        self._sprint_cache: dict[int, int] = {}
+        self._sprint_cache: dict = {}
 
         # Статистика
         self.stats = {"created": 0, "skipped": 0, "errors": 0}
 
-    def _get_sprint_id(self, sprint_number: Optional[int]) -> Optional[int]:
+    def _get_sprint_id(self, sprint_number: "Optional[int]") -> "Optional[int]":
         if sprint_number is None or self.board_id is None:
             return None
         if sprint_number not in self._sprint_cache:
@@ -2596,19 +2666,13 @@ class IssueCreator:
         return self._sprint_cache.get(sprint_number)
 
     def create_all(self) -> None:
-        log.info("🚀 Начало создания тикетов в проекте %s", self.project_key)
+        log.info("\U0001f680 Начало создания тикетов в проекте %s", self.project_key)
         log.info("   Режим: %s", "DRY-RUN (тикеты не создаются)" if self.dry_run else "LIVE")
-        log.info("   Всего эпиков: %d", len(ISSUES))
+        log.info("   Всего эпиков: %d", len(self.issues))
 
-        for epic_data in ISSUES:
+        for epic_data in self.issues:
             self._process_epic(epic_data)
 
-        log.info(
-            "\n📊 Итого: ✅ создано=%d  ⏩ пропущено=%d  ❌ ошибок=%d",
-            self.stats["created"],
-            self.stats["skipped"],
-            self.stats["errors"],
-        )
 
     def _process_epic(self, epic_data: dict) -> None:
         summary = epic_data["summary"]
@@ -2759,6 +2823,20 @@ def parse_args() -> argparse.Namespace:
         help="Не создавать/назначать спринты (полезно если доска Kanban)",
     )
     parser.add_argument(
+        "--create-board",
+        action="store_true",
+        help=(
+            "Автоматически создать Scrum-доску если она не найдена. "
+            "Создаёт saved filter + board через Jira Agile API."
+        ),
+    )
+    parser.add_argument(
+        "--board-name",
+        default=None,
+        metavar="NAME",
+        help="Имя создаваемой доски (по умолчанию: '<PROJECT> board')",
+    )
+    parser.add_argument(
         "--list",
         action="store_true",
         help="Вывести список всех эпиков и задач без создания",
@@ -2829,14 +2907,29 @@ def main() -> int:
     # Получить board ID для спринтов
     board_id: Optional[int] = None
     if not args.no_sprints:
+        log.info("🔍 Ищу Scrum-доску для проекта %s...", args.project)
         board_id = client.get_board_id(args.project)
         if board_id:
-            log.info("   Board ID: %d", board_id)
+            log.info("   ✅ Board ID: %d", board_id)
         else:
-            log.warning("   Scrum-доска не найдена. Спринты не будут назначены.")
+            if args.create_board:
+                log.info("   Scrum-доска не найдена — создаю автоматически (--create-board)...")
+                board_id = client.create_scrum_board(
+                    project_key=args.project,
+                    board_name=args.board_name,
+                )
+                if board_id:
+                    log.info("   ✅ Scrum-доска готова (Board ID: %d)", board_id)
+                else:
+                    log.warning("   ⚠️  Не удалось создать доску. Спринты не будут назначены.")
+            else:
+                log.warning(
+                    "   Scrum-доска не найдена. Спринты не будут назначены.\n"
+                    "   Совет: добавьте флаг --create-board для автосоздания доски."
+                )
 
-    # Фильтр по эпику
-    issues_to_process = ISSUES
+    # Фильтр по эпику — делаем явную копию, чтобы не трогать глобальный список
+    issues_to_process: list = list(ISSUES)
     if args.epic is not None:
         if args.epic < 0 or args.epic >= len(ISSUES):
             log.error("❌ Индекс --epic=%d выходит за диапазон 0–%d", args.epic, len(ISSUES) - 1)
@@ -2844,27 +2937,21 @@ def main() -> int:
         issues_to_process = [ISSUES[args.epic]]
         log.info("   Создаём только эпик #%d: %s", args.epic, issues_to_process[0]["summary"])
 
-    # Запустить создание
+    # Применить delay из args (патчим time.sleep)
+    _orig_sleep = time.sleep
+    time.sleep = lambda s: _orig_sleep(args.delay)
+
+    # Запустить создание — передаём копию списка, глобальный ISSUES не трогаем
     creator = IssueCreator(
         client=client,
         project_key=args.project,
         board_id=board_id,
         dry_run=args.dry_run,
+        issues=issues_to_process,
     )
-    # Применить delay из args
-    import builtins
-    _orig_sleep = time.sleep
-    time.sleep = lambda s: _orig_sleep(args.delay)
-
-    # Ограничить до выбранных эпиков
-    _original_issues = ISSUES.copy()
-    ISSUES.clear()
-    ISSUES.extend(issues_to_process)
     try:
         creator.create_all()
     finally:
-        ISSUES.clear()
-        ISSUES.extend(_original_issues)
         time.sleep = _orig_sleep
 
     return 0 if creator.stats["errors"] == 0 else 1
