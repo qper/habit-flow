@@ -2180,4 +2180,695 @@ ISSUES = [
                             "## Критерии приёмки\n"
                             "- [ ] Lighthouse PWA: 100/100\n"
                             "- [ ] Устанавливается на iPhone без предупреждений\n"
-                            "- [ ] Запускается без адресной строки\n
+                            "- [ ] Запускается без адресной строки (standalone)\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "# Lighthouse CI\n"
+                            "npx lhci autorun --collect.url=https://habitflow.local\n"
+                            "# Lighthouse PWA score должен быть 100\n"
+                            "```"
+                        ),
+                        "expert": "Frontend Developer",
+                        "sprint": 6,
+                    },
+                    {
+                        "type": "Task",
+                        "summary": "Bottom Navigation + safe-area-inset + mobile touch UX",
+                        "description": (
+                            "## Описание\n"
+                            "**Bottom Navigation (мобиль < 768px):**\n"
+                            "- Фиксированный tab bar внизу: Сегодня / Статистика / Привычки / Настройки\n"
+                            "- `padding-bottom: env(safe-area-inset-bottom)` для iPhone с Home Indicator\n"
+                            "- Активная вкладка: заполненная иконка + акцент-цвет\n"
+                            "- Анимация: иконка scale 1→1.1 при нажатии (50ms)\n"
+                            "**Mobile touch improvements:**\n"
+                            "- Все интерактивные элементы ≥ 44×44pt (проверить через Axe DevTools)\n"
+                            "- `inputmode='numeric'` / `inputmode='decimal'` на числовых полях\n"
+                            "- Убрать горизонтальный scroll на 320px viewport\n"
+                            "- Disabled zoom на iOS: `<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1'>`\n\n"
+                            "## Исполнитель\n🎨 Frontend Developer\n\n"
+                            "## Критерии приёмки\n"
+                            "- [ ] Bottom Navigation работает на iPhone (real device)\n"
+                            "- [ ] safe-area-inset учтён — контент не скрыт под Home Indicator\n"
+                            "- [ ] Нет горизонтального скролла на 320px\n"
+                            "- [ ] Все touch targets ≥ 44×44pt (Axe DevTools не показывает ошибок)\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "# Playwright на mobile viewport\n"
+                            "npx playwright test mobile.spec.ts --project=mobile\n"
+                            "```"
+                        ),
+                        "expert": "Frontend Developer",
+                        "sprint": 6,
+                    },
+                    {
+                        "type": "Task",
+                        "summary": "WCAG 2.1 AA Accessibility Audit + тёмная/светлая тема",
+                        "description": (
+                            "## Описание\n"
+                            "**Accessibility audit:**\n"
+                            "- Запустить axe-core на всех страницах, устранить все CRITICAL и SERIOUS нарушения\n"
+                            "- Контраст текста ≥ 4.5:1 (AA) на обеих темах\n"
+                            "- Все формы: `<label for>` или `aria-label`\n"
+                            "- Keyboard navigation: Tab/Shift+Tab/Enter/Space работает без мыши\n"
+                            "- Focus ring виден на всех интерактивных элементах (не `outline: none`)\n"
+                            "- Screen reader: кнопки имеют `aria-label`, состояния — `aria-pressed`/`aria-checked`\n"
+                            "**Тема light/dark:**\n"
+                            "- `prefers-color-scheme: dark` определяет тему по умолчанию ('system')\n"
+                            "- Переключение через class `dark` на `<html>`, без flash при загрузке\n"
+                            "- Цвета из ТЗ §8.1 реализованы через CSS переменные\n\n"
+                            "## Исполнитель\n🎨 Frontend Developer\n\n"
+                            "## Критерии приёмки\n"
+                            "- [ ] `npx axe http://localhost:3000` — 0 критических нарушений\n"
+                            "- [ ] Полная навигация клавиатурой через все 4 экрана\n"
+                            "- [ ] Контраст ≥ 4.5:1 в обеих темах (проверить через Colour Contrast Analyser)\n"
+                            "- [ ] VoiceOver iOS: можно войти и отметить привычку\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "npx axe-cli http://localhost:3000 --exit\n"
+                            "npx axe-cli http://localhost:3000/habits --exit\n"
+                            "# Оба должны завершиться с кодом 0\n"
+                            "```"
+                        ),
+                        "expert": "Frontend Developer",
+                        "sprint": 7,
+                    },
+                ],
+            },
+            {
+                "type": "Story",
+                "summary": "Documentation & Final Polish",
+                "description": "README, runbook, OpenAPI YAML, seed скрипт, финальный smoke test.",
+                "sprint": 7,
+                "children": [
+                    {
+                        "type": "Task",
+                        "summary": "README.md — полная документация проекта",
+                        "description": (
+                            "## Описание\n"
+                            "Написать итоговый `README.md` в корне репозитория:\n"
+                            "- Badges: CI status, License, Docker image size\n"
+                            "- **What is HabitFlow** — 2-3 предложения + скриншоты (light + dark theme)\n"
+                            "- **Features** — key features из ТЗ §1.4\n"
+                            "- **Quick Start (docker-compose)** — 4 команды до работающего приложения\n"
+                            "- **Kubernetes Deploy** — ссылка на Appendix B\n"
+                            "- **Architecture** — диаграмма из ТЗ §4.1 (ASCII)\n"
+                            "- **Development** — make targets, local setup\n"
+                            "- **Tech Stack** — таблица из ТЗ §5\n"
+                            "- **Contributing** — code style, PR checklist\n"
+                            "- **License** — MIT\n\n"
+                            "## Исполнитель\n🎯 Tech Lead\n\n"
+                            "## Критерии приёмки\n"
+                            "- [ ] README рендерится корректно на GitHub (проверить через github.com)\n"
+                            "- [ ] Quick Start: новый разработчик может запустить приложение за < 5 мин\n"
+                            "- [ ] Все ссылки рабочие\n"
+                            "- [ ] Скриншоты обеих тем в `/docs/screenshots/`\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "# Проверка broken links\n"
+                            "npx markdown-link-check README.md\n"
+                            "```"
+                        ),
+                        "expert": "Tech Lead",
+                        "sprint": 7,
+                    },
+                    {
+                        "type": "Task",
+                        "summary": "runbook.md + OpenAPI YAML (docs/api.yaml)",
+                        "description": (
+                            "## Описание\n"
+                            "**docs/runbook.md** — операционные процедуры по Appendix C из ТЗ:\n"
+                            "- Ручной бэкап, просмотр логов, подключение к БД, сброс пароля\n"
+                            "- Troubleshooting: pod не стартует, БД недоступна, cert-manager ошибка\n"
+                            "- Upgrade процедура (helm upgrade → verify → rollback если нужно)\n"
+                            "- Восстановление из бэкапа (pg_restore)\n\n"
+                            "**docs/api.yaml** — OpenAPI 3.1 спецификация:\n"
+                            "- Все эндпоинты из ТЗ §7.2 с request/response схемами\n"
+                            "- Генерировать через `swaggo/swag` из комментариев к handlers\n"
+                            "- Swagger UI доступен на `/api/v1/swagger/index.html` в dev режиме\n\n"
+                            "## Исполнитель\n🔧 DevOps Engineer / 💻 Backend Developer\n\n"
+                            "## Критерии приёмки\n"
+                            "- [ ] `swagger-cli validate docs/api.yaml` — 0 ошибок\n"
+                            "- [ ] Swagger UI доступен и все эндпоинты имеют примеры\n"
+                            "- [ ] runbook содержит все операции из Appendix C\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "npx @apidevtools/swagger-cli validate docs/api.yaml && echo 'OpenAPI OK'\n"
+                            "```"
+                        ),
+                        "expert": "DevOps Engineer / Backend Developer",
+                        "sprint": 7,
+                    },
+                    {
+                        "type": "Task",
+                        "summary": "seed-db.sh + setup-dev.sh + финальный smoke test",
+                        "description": (
+                            "## Описание\n"
+                            "**scripts/seed-db.sh:**\n"
+                            "- Создать тестового пользователя `demo / Demo1234!`\n"
+                            "- Создать 5 привычек (boolean, numeric×2, duration×2) с разными категориями\n"
+                            "- Заполнить entries за последние 30 дней (~80% completion rate)\n"
+                            "- Используется для демо и E2E тестов\n\n"
+                            "**scripts/setup-dev.sh:**\n"
+                            "- Проверить наличие Docker, Node 22, Go 1.23, kubectl, helm\n"
+                            "- Запустить generate-keys.sh если ключи отсутствуют\n"
+                            "- Создать `.env.local` из `.env.local.example`\n"
+                            "- `docker-compose up -d && sleep 10 && make seed`\n\n"
+                            "**Финальный smoke test (CI job 'smoke'):**\n"
+                            "- docker-compose up → seed → Playwright smoke suite (5 критических сценариев)\n"
+                            "- Время: < 3 минуты\n\n"
+                            "## Исполнитель\n🔧 DevOps Engineer\n\n"
+                            "## Критерии приёмки\n"
+                            "- [ ] `bash scripts/setup-dev.sh` на чистой машине: приложение работает\n"
+                            "- [ ] Seed данные видны в Grafana Business dashboard\n"
+                            "- [ ] Smoke test в CI проходит за < 3 мин\n\n"
+                            "## Автоматизированная проверка\n"
+                            "```bash\n"
+                            "bash scripts/setup-dev.sh 2>&1 | tail -5\n"
+                            "curl -sf http://localhost:8080/healthz && echo 'Smoke OK'\n"
+                            "```"
+                        ),
+                        "expert": "DevOps Engineer",
+                        "sprint": 7,
+                    },
+                ],
+            },
+        ],
+    },
+]
+
+# =============================================================================
+# JIRA API CLIENT
+# =============================================================================
+
+try:
+    import requests
+    from requests.auth import HTTPBasicAuth
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
+    import urllib.request
+    import urllib.parse
+
+
+class JiraClient:
+    """Тонкая обёртка над Jira Cloud REST API v2 + Agile API."""
+
+    def __init__(self, base_url: str, email: str, token: str):
+        self.base_url = base_url.rstrip("/")
+        self.email = email
+        self.token = token
+        if HAS_REQUESTS:
+            self.session = requests.Session()
+            self.session.auth = HTTPBasicAuth(email, token)
+            self.session.headers.update({
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            })
+        else:
+            import base64
+            creds = base64.b64encode(f"{email}:{token}".encode()).decode()
+            self._auth_header = f"Basic {creds}"
+
+    def _get(self, path: str) -> dict:
+        url = f"{self.base_url}{path}"
+        if HAS_REQUESTS:
+            resp = self.session.get(url, timeout=30)
+            resp.raise_for_status()
+            return resp.json()
+        else:
+            req = urllib.request.Request(url, headers={
+                "Authorization": self._auth_header,
+                "Accept": "application/json",
+            })
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read().decode())
+
+    def _post(self, path: str, data: dict) -> dict:
+        url = f"{self.base_url}{path}"
+        body = json.dumps(data).encode()
+        if HAS_REQUESTS:
+            resp = self.session.post(url, json=data, timeout=30)
+            if resp.status_code not in (200, 201):
+                log.error("POST %s → %s: %s", path, resp.status_code, resp.text[:500])
+            resp.raise_for_status()
+            return resp.json() if resp.content else {}
+        else:
+            req = urllib.request.Request(url, data=body, method="POST", headers={
+                "Authorization": self._auth_header,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            })
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read().decode()) if r.length else {}
+
+    def _put(self, path: str, data: dict) -> None:
+        url = f"{self.base_url}{path}"
+        body = json.dumps(data).encode()
+        if HAS_REQUESTS:
+            resp = self.session.put(url, json=data, timeout=30)
+            if resp.status_code not in (200, 201, 204):
+                log.error("PUT %s → %s: %s", path, resp.status_code, resp.text[:500])
+            resp.raise_for_status()
+        else:
+            req = urllib.request.Request(url, data=body, method="PUT", headers={
+                "Authorization": self._auth_header,
+                "Content-Type": "application/json",
+            })
+            urllib.request.urlopen(req, timeout=30)
+
+    # ------------------------------------------------------------------
+    # Issues
+    # ------------------------------------------------------------------
+
+    def create_issue(
+        self,
+        project_key: str,
+        issue_type: str,
+        summary: str,
+        description: str,
+        parent_key: Optional[str] = None,
+        epic_key: Optional[str] = None,
+        sprint_id: Optional[int] = None,
+        epic_name: Optional[str] = None,
+        custom_fields: Optional[dict] = None,
+    ) -> str:
+        """Создать задачу в Jira. Вернуть ключ созданного тикета (например, HF-42)."""
+        fields: dict = {
+            "project": {"key": project_key},
+            "issuetype": {"name": issue_type},
+            "summary": summary[:255],  # Jira ограничение
+            "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"type": "text", "text": description}],
+                    }
+                ],
+            },
+        }
+
+        # Epic Name для Epics (Jira Cloud требует это поле)
+        if issue_type == "Epic" and epic_name:
+            fields["customfield_10011"] = epic_name  # Epic Name
+
+        # Parent (Story → Epic, Task → Story)
+        if parent_key:
+            if issue_type == "Story":
+                # В Jira Cloud story → epic через parent
+                fields["parent"] = {"key": parent_key}
+            elif issue_type == "Task":
+                fields["parent"] = {"key": parent_key}
+
+        # Epic Link (если используется старый API)
+        if epic_key and issue_type in ("Story", "Task"):
+            fields["customfield_10014"] = epic_key  # Epic Link
+
+        # Sprint
+        if sprint_id is not None:
+            fields["customfield_10020"] = sprint_id
+
+        # Дополнительные поля
+        if custom_fields:
+            fields.update(custom_fields)
+
+        result = self._post("/rest/api/3/issue", {"fields": fields})
+        key = result.get("key", "")
+        log.info("  ✅ Created %s [%s]: %s", issue_type, key, summary[:60])
+        return key
+
+    # ------------------------------------------------------------------
+    # Sprints (Agile API)
+    # ------------------------------------------------------------------
+
+    def get_board_id(self, project_key: str) -> Optional[int]:
+        """Получить ID первой Scrum-доски проекта."""
+        try:
+            data = self._get(f"/rest/agile/1.0/board?projectKeyOrId={project_key}&type=scrum")
+            values = data.get("values", [])
+            if values:
+                return values[0]["id"]
+        except Exception as exc:
+            log.warning("Не удалось получить board_id: %s", exc)
+        return None
+
+    def get_sprints(self, board_id: int) -> list:
+        """Получить все спринты доски."""
+        try:
+            data = self._get(f"/rest/agile/1.0/board/{board_id}/sprint?state=active,future,closed")
+            return data.get("values", [])
+        except Exception as exc:
+            log.warning("Не удалось получить спринты: %s", exc)
+            return []
+
+    def get_or_create_sprint(
+        self, board_id: int, sprint_number: int, project_key: str
+    ) -> Optional[int]:
+        """Найти спринт с номером sprint_number или создать его."""
+        sprint_name = f"Sprint {sprint_number}"
+        sprints = self.get_sprints(board_id)
+        for sp in sprints:
+            if sp.get("name", "").strip() == sprint_name:
+                log.debug("  Sprint найден: %s (id=%s)", sprint_name, sp["id"])
+                return sp["id"]
+
+        # Создать новый спринт
+        try:
+            result = self._post("/rest/agile/1.0/sprint", {
+                "name": sprint_name,
+                "originBoardId": board_id,
+            })
+            sprint_id = result.get("id")
+            log.info("  📅 Создан спринт: %s (id=%s)", sprint_name, sprint_id)
+            return sprint_id
+        except Exception as exc:
+            log.warning("Не удалось создать спринт %s: %s", sprint_name, exc)
+            return None
+
+    def move_to_sprint(self, sprint_id: int, issue_keys: list) -> None:
+        """Переместить задачи в спринт."""
+        if not issue_keys:
+            return
+        try:
+            self._post(f"/rest/agile/1.0/sprint/{sprint_id}/issue", {
+                "issues": issue_keys,
+            })
+        except Exception as exc:
+            log.warning("Не удалось переместить %s в спринт %s: %s", issue_keys, sprint_id, exc)
+
+
+# =============================================================================
+# ИЕРАРХИЧЕСКОЕ СОЗДАНИЕ ТИКЕТОВ
+# =============================================================================
+
+class IssueCreator:
+    """Обходит иерархию ISSUES и создаёт тикеты в Jira."""
+
+    def __init__(
+        self,
+        client: JiraClient,
+        project_key: str,
+        board_id: Optional[int],
+        dry_run: bool = False,
+    ):
+        self.client = client
+        self.project_key = project_key
+        self.board_id = board_id
+        self.dry_run = dry_run
+
+        # Кэш спринтов: номер → id
+        self._sprint_cache: dict[int, int] = {}
+
+        # Статистика
+        self.stats = {"created": 0, "skipped": 0, "errors": 0}
+
+    def _get_sprint_id(self, sprint_number: Optional[int]) -> Optional[int]:
+        if sprint_number is None or self.board_id is None:
+            return None
+        if sprint_number not in self._sprint_cache:
+            sid = self.client.get_or_create_sprint(
+                self.board_id, sprint_number, self.project_key
+            )
+            if sid:
+                self._sprint_cache[sprint_number] = sid
+        return self._sprint_cache.get(sprint_number)
+
+    def create_all(self) -> None:
+        log.info("🚀 Начало создания тикетов в проекте %s", self.project_key)
+        log.info("   Режим: %s", "DRY-RUN (тикеты не создаются)" if self.dry_run else "LIVE")
+        log.info("   Всего эпиков: %d", len(ISSUES))
+
+        for epic_data in ISSUES:
+            self._process_epic(epic_data)
+
+        log.info(
+            "\n📊 Итого: ✅ создано=%d  ⏩ пропущено=%d  ❌ ошибок=%d",
+            self.stats["created"],
+            self.stats["skipped"],
+            self.stats["errors"],
+        )
+
+    def _process_epic(self, epic_data: dict) -> None:
+        summary = epic_data["summary"]
+        log.info("\n📦 EPIC: %s", summary)
+
+        if self.dry_run:
+            self.stats["skipped"] += 1
+            epic_key = f"{self.project_key}-DRY"
+        else:
+            try:
+                epic_key = self.client.create_issue(
+                    project_key=self.project_key,
+                    issue_type="Epic",
+                    summary=summary,
+                    description=epic_data.get("description", ""),
+                    epic_name=re.sub(r"^\[.*?\]\s*", "", summary),  # без [PREFIX]
+                )
+                self.stats["created"] += 1
+            except Exception as exc:
+                log.error("❌ Ошибка создания Epic '%s': %s", summary, exc)
+                self.stats["errors"] += 1
+                return
+
+        time.sleep(0.3)
+
+        for story_data in epic_data.get("children", []):
+            self._process_story(story_data, epic_key)
+
+    def _process_story(self, story_data: dict, epic_key: str) -> None:
+        summary = story_data["summary"]
+        sprint_number = story_data.get("sprint")
+        sprint_id = self._get_sprint_id(sprint_number)
+
+        log.info("  📖 Story: %s (Sprint %s)", summary, sprint_number)
+
+        if self.dry_run:
+            self.stats["skipped"] += 1
+            story_key = f"{self.project_key}-DRY"
+        else:
+            try:
+                story_key = self.client.create_issue(
+                    project_key=self.project_key,
+                    issue_type="Story",
+                    summary=summary,
+                    description=story_data.get("description", ""),
+                    parent_key=epic_key,
+                    epic_key=epic_key,
+                    sprint_id=sprint_id,
+                )
+                self.stats["created"] += 1
+            except Exception as exc:
+                log.error("❌ Ошибка создания Story '%s': %s", summary, exc)
+                self.stats["errors"] += 1
+                return
+
+        time.sleep(0.3)
+
+        for task_data in story_data.get("children", []):
+            self._process_task(task_data, story_key, epic_key)
+
+    def _process_task(self, task_data: dict, story_key: str, epic_key: str) -> None:
+        summary = task_data["summary"]
+        sprint_number = task_data.get("sprint")
+        sprint_id = self._get_sprint_id(sprint_number)
+
+        log.info("     🔧 Task: %s (Sprint %s)", summary, sprint_number)
+
+        if self.dry_run:
+            self.stats["skipped"] += 1
+            return
+
+        try:
+            self.client.create_issue(
+                project_key=self.project_key,
+                issue_type="Task",
+                summary=summary,
+                description=task_data.get("description", ""),
+                parent_key=story_key,
+                epic_key=epic_key,
+                sprint_id=sprint_id,
+            )
+            self.stats["created"] += 1
+        except Exception as exc:
+            log.error("❌ Ошибка создания Task '%s': %s", summary, exc)
+            self.stats["errors"] += 1
+
+        time.sleep(0.3)
+
+
+# =============================================================================
+# ENTRYPOINT
+# =============================================================================
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="HabitFlow — автоматическое создание иерархии тикетов в Jira",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Примеры использования:
+  # Dry-run: только показать что будет создано
+  python3 HabitFlow.py --project HF --email you@example.com --token TOKEN --dry-run
+
+  # Создать все тикеты
+  python3 HabitFlow.py --project HF --email you@example.com --token TOKEN
+
+  # Указать свой Jira URL (Server/Data Center)
+  python3 HabitFlow.py --project HF --email admin --token TOKEN \\
+      --jira-url https://jira.company.intranet
+
+  # Создать только конкретный эпик (по индексу 0-based)
+  python3 HabitFlow.py --project HF --email you@example.com --token TOKEN --epic 0
+
+Получить API-токен:
+  Jira Cloud: https://id.atlassian.com/manage-profile/security/api-tokens
+  Jira Server: Profile → Personal Access Tokens
+        """,
+    )
+    parser.add_argument("--project", required=not ("--list" in sys.argv), help="Ключ проекта в Jira (например, HF)")
+    parser.add_argument("--email", required=not ("--list" in sys.argv), help="Email аккаунта Jira")
+    parser.add_argument("--token", required=not ("--list" in sys.argv), help="API токен Jira")
+    parser.add_argument(
+        "--jira-url",
+        default="https://your-domain.atlassian.net",
+        help="Базовый URL Jira (default: https://your-domain.atlassian.net)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Не создавать тикеты, только показать иерархию",
+    )
+    parser.add_argument(
+        "--epic",
+        type=int,
+        default=None,
+        metavar="INDEX",
+        help="Создать только один эпик по индексу (0-based). По умолчанию — все.",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=0.3,
+        metavar="SEC",
+        help="Задержка между запросами в секундах (default: 0.3)",
+    )
+    parser.add_argument(
+        "--no-sprints",
+        action="store_true",
+        help="Не создавать/назначать спринты (полезно если доска Kanban)",
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="Вывести список всех эпиков и задач без создания",
+    )
+    return parser.parse_args()
+
+
+def list_issues() -> None:
+    """Вывести полную иерархию тикетов в консоль (без Jira)."""
+    total_epics = len(ISSUES)
+    total_stories = sum(len(e.get("children", [])) for e in ISSUES)
+    total_tasks = sum(
+        len(s.get("children", []))
+        for e in ISSUES
+        for s in e.get("children", [])
+    )
+    print(f"\nHabitFlow — Иерархия тикетов")
+    print(f"{'='*60}")
+    print(f"Эпиков: {total_epics}  |  Сторей: {total_stories}  |  Задач: {total_tasks}")
+    print(f"{'='*60}\n")
+
+    for i, epic in enumerate(ISSUES):
+        sprint_info = f"Sprint {epic['sprint']}" if epic.get("sprint") else "—"
+        print(f"[{i:02d}] 📦 EPIC: {epic['summary']}")
+        for story in epic.get("children", []):
+            sp = f"Sprint {story.get('sprint', '?')}"
+            print(f"       📖 Story [{sp}]: {story['summary']}")
+            for task in story.get("children", []):
+                sp_t = f"Sprint {task.get('sprint', '?')}"
+                expert = task.get("expert", "—")
+                print(f"            🔧 [{sp_t}] {task['summary']}")
+                print(f"               👤 {expert}")
+    print()
+
+
+def main() -> int:
+    args = parse_args()
+
+    # Просто показать список
+    if args.list:
+        list_issues()
+        return 0
+
+    # Проверить зависимости
+    if not HAS_REQUESTS:
+        log.warning(
+            "Библиотека 'requests' не установлена. Используется urllib (ограниченная функциональность).\n"
+            "Рекомендуется: pip install requests"
+        )
+
+    # Создать клиент
+    client = JiraClient(
+        base_url=args.jira_url,
+        email=args.email,
+        token=args.token,
+    )
+
+    # Проверить подключение
+    log.info("🔌 Подключение к Jira: %s", args.jira_url)
+    try:
+        me = client._get("/rest/api/3/myself")
+        log.info("   Аутентифицирован как: %s (%s)", me.get("displayName"), me.get("emailAddress"))
+    except Exception as exc:
+        log.error("❌ Не удалось подключиться к Jira: %s", exc)
+        log.error("   Проверьте: --jira-url, --email, --token")
+        return 1
+
+    # Получить board ID для спринтов
+    board_id: Optional[int] = None
+    if not args.no_sprints:
+        board_id = client.get_board_id(args.project)
+        if board_id:
+            log.info("   Board ID: %d", board_id)
+        else:
+            log.warning("   Scrum-доска не найдена. Спринты не будут назначены.")
+
+    # Фильтр по эпику
+    issues_to_process = ISSUES
+    if args.epic is not None:
+        if args.epic < 0 or args.epic >= len(ISSUES):
+            log.error("❌ Индекс --epic=%d выходит за диапазон 0–%d", args.epic, len(ISSUES) - 1)
+            return 1
+        issues_to_process = [ISSUES[args.epic]]
+        log.info("   Создаём только эпик #%d: %s", args.epic, issues_to_process[0]["summary"])
+
+    # Запустить создание
+    creator = IssueCreator(
+        client=client,
+        project_key=args.project,
+        board_id=board_id,
+        dry_run=args.dry_run,
+    )
+    # Применить delay из args
+    import builtins
+    _orig_sleep = time.sleep
+    time.sleep = lambda s: _orig_sleep(args.delay)
+
+    # Ограничить до выбранных эпиков
+    _original_issues = ISSUES.copy()
+    ISSUES.clear()
+    ISSUES.extend(issues_to_process)
+    try:
+        creator.create_all()
+    finally:
+        ISSUES.clear()
+        ISSUES.extend(_original_issues)
+        time.sleep = _orig_sleep
+
+    return 0 if creator.stats["errors"] == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
