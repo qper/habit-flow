@@ -1,0 +1,225 @@
+python3 HabitFlow.py --project HF --jira-url https://habit-flow.atlassian.net --email asitge@gmail.com --token $JIRA_TOKEN --create-board
+15:09:47 [INFO] 🔌 Подключение к Jira: https://habit-flow.atlassian.net
+15:09:47 [INFO]    Аутентифицирован как: Löscha (asitge@gmail.com)
+15:09:47 [INFO] 🔍 Ищу Scrum-доску для проекта HF...
+15:09:47 [INFO]    ✅ Board ID: 34
+15:09:47 [INFO] 🚀 Начало создания тикетов в проекте HF
+15:09:47 [INFO]    Режим: LIVE
+15:09:47 [INFO]    Всего эпиков: 12
+15:09:47 [INFO] 
+📦 EPIC: [INFRA] Infrastructure & Development Environment
+15:09:49 [INFO]   ✅ Created Epic [HF-1]: [INFRA] Infrastructure & Development Environment
+15:09:50 [INFO]   📖 Story: Repository & Dev Environment Setup (Sprint 1)
+15:09:51 [INFO]   ✅ Created Story [HF-2]: Repository & Dev Environment Setup
+15:09:51 [INFO]      🔧 Task: Инициализация структуры монорепозитория (Sprint 1)
+15:09:52 [INFO]   ✅ Created Sub-task [HF-3]: Инициализация структуры монорепозитория
+15:09:53 [INFO]      🔧 Task: Создать Makefile со всеми целями из ТЗ §12.1 (Sprint 1)
+15:09:54 [INFO]   ✅ Created Sub-task [HF-4]: Создать Makefile со всеми целями из ТЗ §12.1
+15:09:54 [INFO]      🔧 Task: Настроить docker-compose.yml для локальной разработки (Sprint 1)
+15:09:55 [INFO]   ✅ Created Sub-task [HF-5]: Настроить docker-compose.yml для локальной разработки
+15:09:55 [INFO]      🔧 Task: Скелет GitHub Actions CI (ci.yml) (Sprint 1)
+15:09:56 [INFO]   ✅ Created Sub-task [HF-6]: Скелет GitHub Actions CI (ci.yml)
+15:09:56 [INFO]   📖 Story: Backend Go Foundation (Sprint 1)
+15:09:57 [INFO]   ✅ Created Story [HF-7]: Backend Go Foundation
+15:09:58 [INFO]      🔧 Task: Инициализировать Go-модуль, Echo v4, main.go (Sprint 1)
+15:09:59 [INFO]   ✅ Created Sub-task [HF-8]: Инициализировать Go-модуль, Echo v4, main.go
+15:09:59 [INFO]      🔧 Task: Конфигурация через Viper + структурированный логгер Zap (Sprint 1)
+15:10:00 [INFO]   ✅ Created Sub-task [HF-9]: Конфигурация через Viper + структурированный логгер Zap
+15:10:01 [INFO]      🔧 Task: Реализовать GET /healthz и GET /readyz (Sprint 1)
+15:10:01 [INFO]   ✅ Created Sub-task [HF-10]: Реализовать GET /healthz и GET /readyz
+15:10:02 [INFO]      🔧 Task: Prometheus /metrics эндпоинт (Sprint 1)
+15:10:03 [INFO]   ✅ Created Sub-task [HF-11]: Prometheus /metrics эндпоинт
+15:10:03 [INFO]   📖 Story: Frontend React Foundation (Sprint 1)
+15:10:04 [INFO]   ✅ Created Story [HF-12]: Frontend React Foundation
+15:10:05 [INFO]      🔧 Task: Инициализировать Vite 6 + React 18 + TypeScript 5.x (Sprint 1)
+15:10:06 [INFO]   ✅ Created Sub-task [HF-13]: Инициализировать Vite 6 + React 18 + TypeScript 5.x
+15:10:06 [INFO]      🔧 Task: Настроить Tailwind CSS 4 + shadcn/ui + Radix UI (Sprint 1)
+15:10:07 [INFO]   ✅ Created Sub-task [HF-14]: Настроить Tailwind CSS 4 + shadcn/ui + Radix UI
+15:10:07 [INFO]      🔧 Task: Настроить TanStack Router + TanStack Query v5 + Zustand (Sprint 1)
+15:10:08 [INFO]   ✅ Created Sub-task [HF-15]: Настроить TanStack Router + TanStack Query v5 + Zustand
+15:10:09 [INFO]      🔧 Task: Настроить i18next (ru/en) и Vite PWA Plugin (Sprint 1)
+15:10:12 [INFO]   ✅ Created Sub-task [HF-16]: Настроить i18next (ru/en) и Vite PWA Plugin
+15:10:12 [INFO] 
+📦 EPIC: [DB] Database Schema & Data Layer
+15:10:13 [INFO]   ✅ Created Epic [HF-17]: [DB] Database Schema & Data Layer
+15:10:13 [INFO]   📖 Story: PostgreSQL Schema & Migrations (Sprint 1)
+15:10:15 [INFO]   ✅ Created Story [HF-18]: PostgreSQL Schema & Migrations
+15:10:15 [INFO]      🔧 Task: Миграции 001-005: extensions, users, sessions, recovery_codes, categories (Sprint 1)
+15:10:16 [INFO]   ✅ Created Sub-task [HF-19]: Миграции 001-005: extensions, users, sessions, recovery_code
+15:10:16 [INFO]      🔧 Task: Миграции 006-009: habits, habit_entries, streak function, audit_log (Sprint 1)
+15:10:17 [INFO]   ✅ Created Sub-task [HF-20]: Миграции 006-009: habits, habit_entries, streak function, au
+15:10:17 [INFO]      🔧 Task: Интеграция golang-migrate в автостарт backend (Sprint 1)
+15:10:18 [INFO]   ✅ Created Sub-task [HF-21]: Интеграция golang-migrate в автостарт backend
+15:10:18 [INFO]      🔧 Task: Настроить sqlc и написать SQL-запросы (Sprint 1)
+15:10:19 [INFO]   ✅ Created Sub-task [HF-22]: Настроить sqlc и написать SQL-запросы
+15:10:20 [INFO] 
+📦 EPIC: [AUTH] Authentication & Security
+15:10:21 [INFO]   ✅ Created Epic [HF-23]: [AUTH] Authentication & Security
+15:10:21 [INFO]   📖 Story: User Registration & Recovery Codes (Sprint 1)
+15:10:22 [INFO]   ✅ Created Story [HF-24]: User Registration & Recovery Codes
+15:10:22 [INFO]      🔧 Task: Реализовать POST /api/v1/auth/register (Sprint 1)
+15:10:24 [INFO]   ✅ Created Sub-task [HF-25]: Реализовать POST /api/v1/auth/register
+15:10:24 [INFO]      🔧 Task: Скрипт генерации RS256 JWT ключей (Sprint 1)
+15:10:26 [INFO]   ✅ Created Sub-task [HF-26]: Скрипт генерации RS256 JWT ключей
+15:10:26 [INFO]   📖 Story: JWT Login, Refresh & Session Management (Sprint 1)
+15:10:27 [INFO]   ✅ Created Story [HF-27]: JWT Login, Refresh & Session Management
+15:10:27 [INFO]      🔧 Task: Реализовать POST /auth/login и JWT RS256 (Sprint 1)
+15:10:29 [INFO]   ✅ Created Sub-task [HF-28]: Реализовать POST /auth/login и JWT RS256
+15:10:29 [INFO]      🔧 Task: Реализовать /auth/refresh с rotation и /auth/logout (Sprint 1)
+15:10:30 [INFO]   ✅ Created Sub-task [HF-29]: Реализовать /auth/refresh с rotation и /auth/logout
+15:10:30 [INFO]      🔧 Task: Rate limiting middleware и защита /auth/* (Sprint 1)
+15:10:32 [INFO]   ✅ Created Sub-task [HF-30]: Rate limiting middleware и защита /auth/*
+15:10:32 [INFO]      🔧 Task: Recovery codes: /auth/recover и /me/recovery-codes (Sprint 2)
+15:10:33 [INFO]   ✅ Created Sub-task [HF-31]: Recovery codes: /auth/recover и /me/recovery-codes
+15:10:34 [INFO]   📖 Story: Frontend Authentication UI (Sprint 2)
+15:10:35 [INFO]   ✅ Created Story [HF-32]: Frontend Authentication UI
+15:10:35 [INFO]      🔧 Task: Создать страницы /login и /register (Sprint 2)
+15:10:37 [INFO]   ✅ Created Sub-task [HF-33]: Создать страницы /login и /register
+15:10:37 [INFO]      🔧 Task: Token management: access в памяти, refresh в cookie, auto-refresh (Sprint 2)
+15:10:38 [INFO]   ✅ Created Sub-task [HF-34]: Token management: access в памяти, refresh в cookie, auto-re
+15:10:38 [INFO] 
+📦 EPIC: [HABITS] Habit & Category Management
+15:10:39 [INFO]   ✅ Created Epic [HF-35]: [HABITS] Habit & Category Management
+15:10:40 [INFO]   📖 Story: Habit CRUD API (Backend) (Sprint 2)
+15:10:41 [INFO]   ✅ Created Story [HF-36]: Habit CRUD API (Backend)
+15:10:41 [INFO]      🔧 Task: POST/GET/PUT/DELETE /api/v1/habits (Sprint 2)
+15:10:43 [INFO]   ✅ Created Sub-task [HF-37]: POST/GET/PUT/DELETE /api/v1/habits
+15:10:43 [INFO]      🔧 Task: PATCH /habits/:id/archive и PATCH /habits/reorder (Sprint 2)
+15:10:44 [INFO]   ✅ Created Sub-task [HF-38]: PATCH /habits/:id/archive и PATCH /habits/reorder
+15:10:44 [INFO]      🔧 Task: CRUD /api/v1/categories + reorder (Sprint 2)
+15:10:45 [INFO]   ✅ Created Sub-task [HF-39]: CRUD /api/v1/categories + reorder
+15:10:46 [INFO]   📖 Story: Habit Management UI (Frontend) (Sprint 2)
+15:10:46 [INFO]   ✅ Created Story [HF-40]: Habit Management UI (Frontend)
+15:10:47 [INFO]      🔧 Task: Страница /habits: список с категориями и архивом (Sprint 2)
+15:10:47 [INFO]   ✅ Created Sub-task [HF-41]: Страница /habits: список с категориями и архивом
+15:10:48 [INFO]      🔧 Task: HabitForm dialog: создание и редактирование всех типов привычек (Sprint 2)
+15:10:49 [INFO]   ✅ Created Sub-task [HF-42]: HabitForm dialog: создание и редактирование всех типов привы
+15:10:49 [INFO]      🔧 Task: Drag & Drop сортировка привычек (@dnd-kit) (Sprint 3)
+15:10:50 [INFO]   ✅ Created Sub-task [HF-43]: Drag & Drop сортировка привычек (@dnd-kit)
+15:10:50 [INFO] 
+📦 EPIC: [BOARD] Daily Tracking Board
+15:10:51 [INFO]   ✅ Created Epic [HF-44]: [BOARD] Daily Tracking Board
+15:10:51 [INFO]   📖 Story: Board & Entries API (Backend) (Sprint 2)
+15:10:53 [INFO]   ✅ Created Story [HF-45]: Board & Entries API (Backend)
+15:10:53 [INFO]      🔧 Task: GET /api/v1/board/:date — главный эндпоинт доски (Sprint 2)
+15:10:54 [INFO]   ✅ Created Sub-task [HF-46]: GET /api/v1/board/:date — главный эндпоинт доски
+15:10:54 [INFO]      🔧 Task: POST/PUT/DELETE /api/v1/entries + edit window validation (Sprint 2)
+15:10:55 [INFO]   ✅ Created Sub-task [HF-47]: POST/PUT/DELETE /api/v1/entries + edit window validation
+15:10:56 [INFO]      🔧 Task: GET /habits/:id/streak — текущий и максимальный стрик (Sprint 2)
+15:10:57 [INFO]   ✅ Created Sub-task [HF-48]: GET /habits/:id/streak — текущий и максимальный стрик
+15:10:57 [INFO]   📖 Story: Board UI (Frontend) (Sprint 2)
+15:10:58 [INFO]   ✅ Created Story [HF-49]: Board UI (Frontend)
+15:10:58 [INFO]      🔧 Task: Board page и DateNavBar компонент (Sprint 2)
+15:10:59 [INFO]   ✅ Created Sub-task [HF-50]: Board page и DateNavBar компонент
+15:11:00 [INFO]      🔧 Task: HabitRow: BooleanToggle, NumericInput, DurationInput компоненты (Sprint 2)
+15:11:00 [INFO]   ✅ Created Sub-task [HF-51]: HabitRow: BooleanToggle, NumericInput, DurationInput компоне
+15:11:01 [INFO]      🔧 Task: Read-only режим и swipe навигация (Sprint 2)
+15:11:02 [INFO]   ✅ Created Sub-task [HF-52]: Read-only режим и swipe навигация
+15:11:02 [INFO]      🔧 Task: Streak Pulse анимация и финальный polish Board (Sprint 3)
+15:11:03 [INFO]   ✅ Created Sub-task [HF-53]: Streak Pulse анимация и финальный polish Board
+15:11:04 [INFO] 
+📦 EPIC: [STATS] Statistics & Analytics
+15:11:04 [INFO]   ✅ Created Epic [HF-54]: [STATS] Statistics & Analytics
+15:11:05 [INFO]   📖 Story: Statistics API (Backend) (Sprint 4)
+15:11:06 [INFO]   ✅ Created Story [HF-55]: Statistics API (Backend)
+15:11:06 [INFO]      🔧 Task: GET /dashboard и GET /stats/overview (Sprint 4)
+15:11:07 [INFO]   ✅ Created Sub-task [HF-56]: GET /dashboard и GET /stats/overview
+15:11:08 [INFO]      🔧 Task: GET /stats/heatmap и GET /habits/:id/stats (Sprint 4)
+15:11:09 [INFO]   ✅ Created Sub-task [HF-57]: GET /stats/heatmap и GET /habits/:id/stats
+15:11:09 [INFO]   📖 Story: Statistics UI (Frontend) (Sprint 4)
+15:11:10 [INFO]   ✅ Created Story [HF-58]: Statistics UI (Frontend)
+15:11:10 [INFO]      🔧 Task: Страница /stats и CompletionRateCard (Sprint 4)
+15:11:12 [INFO]   ✅ Created Sub-task [HF-59]: Страница /stats и CompletionRateCard
+15:11:12 [INFO]      🔧 Task: YearHeatmap (52×7 calendar) и DailyLineChart компоненты (Sprint 4)
+15:11:13 [INFO]   ✅ Created Sub-task [HF-60]: YearHeatmap (52×7 calendar) и DailyLineChart компоненты
+15:11:13 [INFO]      🔧 Task: Страница /habits/:id — детали привычки с heatmap (Sprint 4)
+15:11:14 [INFO]   ✅ Created Sub-task [HF-61]: Страница /habits/:id — детали привычки с heatmap
+15:11:14 [INFO] 
+📦 EPIC: [PROFILE] User Profile & Settings
+15:11:15 [INFO]   ✅ Created Epic [HF-62]: [PROFILE] User Profile & Settings
+15:11:15 [INFO]   📖 Story: Profile API (Backend) (Sprint 2)
+15:11:16 [INFO]   ✅ Created Story [HF-63]: Profile API (Backend)
+15:11:17 [INFO]      🔧 Task: GET/PATCH /api/v1/me и смена пароля (Sprint 2)
+15:11:18 [INFO]   ✅ Created Sub-task [HF-64]: GET/PATCH /api/v1/me и смена пароля
+15:11:18 [INFO]   📖 Story: Settings Page (Frontend) (Sprint 3)
+15:11:20 [INFO]   ✅ Created Story [HF-65]: Settings Page (Frontend)
+15:11:20 [INFO]      🔧 Task: Создать страницу /settings со всеми разделами (Sprint 3)
+15:11:21 [INFO]   ✅ Created Sub-task [HF-66]: Создать страницу /settings со всеми разделами
+15:11:21 [INFO] 
+📦 EPIC: [OPS] Monitoring, Logging & Alerting
+15:11:22 [INFO]   ✅ Created Epic [HF-67]: [OPS] Monitoring, Logging & Alerting
+15:11:23 [INFO]   📖 Story: Prometheus Metrics & Business KPIs (Sprint 5)
+15:11:24 [INFO]   ✅ Created Story [HF-68]: Prometheus Metrics & Business KPIs
+15:11:24 [INFO]      🔧 Task: HTTP и бизнес-метрики в backend (Sprint 5)
+15:11:25 [INFO]   ✅ Created Sub-task [HF-69]: HTTP и бизнес-метрики в backend
+15:11:25 [INFO]   📖 Story: Grafana Dashboards & Loki Logging (Sprint 5)
+15:11:26 [INFO]   ✅ Created Story [HF-70]: Grafana Dashboards & Loki Logging
+15:11:27 [INFO]      🔧 Task: Создать 3 Grafana dashboard JSON (Application, Business, Infrastructure) (Sprint 5)
+15:11:28 [INFO]   ✅ Created Sub-task [HF-71]: Создать 3 Grafana dashboard JSON (Application, Business, Inf
+15:11:28 [INFO]      🔧 Task: Настроить Grafana Alloy + Loki и Alertmanager rules (Sprint 5)
+15:11:29 [INFO]   ✅ Created Sub-task [HF-72]: Настроить Grafana Alloy + Loki и Alertmanager rules
+15:11:30 [INFO] 
+📦 EPIC: [K8S] Kubernetes & Helm Deployment
+15:11:30 [INFO]   ✅ Created Epic [HF-73]: [K8S] Kubernetes & Helm Deployment
+15:11:31 [INFO]   📖 Story: Docker Images (Backend & Frontend) (Sprint 5)
+15:11:32 [INFO]   ✅ Created Story [HF-74]: Docker Images (Backend & Frontend)
+15:11:32 [INFO]      🔧 Task: Backend Dockerfile (multi-stage, scratch final image) (Sprint 5)
+15:11:34 [INFO]   ✅ Created Sub-task [HF-75]: Backend Dockerfile (multi-stage, scratch final image)
+15:11:34 [INFO]      🔧 Task: Frontend Dockerfile + nginx.conf + docker-entrypoint.sh (Sprint 5)
+15:11:35 [INFO]   ✅ Created Sub-task [HF-76]: Frontend Dockerfile + nginx.conf + docker-entrypoint.sh
+15:11:36 [INFO]   📖 Story: Helm Chart — полная реализация (Sprint 5)
+15:11:37 [INFO]   ✅ Created Story [HF-77]: Helm Chart — полная реализация
+15:11:37 [INFO]      🔧 Task: Helm chart core: Chart.yaml, values.yaml, _helpers.tpl, namespace (Sprint 5)
+15:11:38 [INFO]   ✅ Created Sub-task [HF-78]: Helm chart core: Chart.yaml, values.yaml, _helpers.tpl, name
+15:11:38 [INFO]      🔧 Task: Backend Deployment, Service, HPA, PDB, ServiceMonitor шаблоны (Sprint 5)
+15:11:39 [INFO]   ✅ Created Sub-task [HF-79]: Backend Deployment, Service, HPA, PDB, ServiceMonitor шаблон
+15:11:40 [INFO]      🔧 Task: Frontend Deployment, Ingress TLS (cert-manager), Backup CronJob (Sprint 5)
+15:11:41 [INFO]   ✅ Created Sub-task [HF-80]: Frontend Deployment, Ingress TLS (cert-manager), Backup Cron
+15:11:41 [INFO]      🔧 Task: Deploy в K3s и smoke test (Sprint 6)
+15:11:42 [INFO]   ✅ Created Sub-task [HF-81]: Deploy в K3s и smoke test
+15:11:43 [INFO] 
+📦 EPIC: [CICD] CI/CD Pipeline & Security Scanning
+15:11:43 [INFO]   ✅ Created Epic [HF-82]: [CICD] CI/CD Pipeline & Security Scanning
+15:11:44 [INFO]   📖 Story: CI Pipeline (lint, test, build, security) (Sprint 5)
+15:11:45 [INFO]   ✅ Created Story [HF-83]: CI Pipeline (lint, test, build, security)
+15:11:45 [INFO]      🔧 Task: ci.yml: backend lint, test с coverage gate ≥80% (Sprint 5)
+15:11:46 [INFO]   ✅ Created Sub-task [HF-84]: ci.yml: backend lint, test с coverage gate ≥80%
+15:11:46 [INFO]      🔧 Task: ci.yml: frontend test, helm validate, security scan (gosec, trivy) (Sprint 5)
+15:11:47 [INFO]   ✅ Created Sub-task [HF-85]: ci.yml: frontend test, helm validate, security scan (gosec, 
+15:11:48 [INFO]      🔧 Task: release.yml: build + push images + helm diff (Sprint 5)
+15:11:49 [INFO]   ✅ Created Sub-task [HF-86]: release.yml: build + push images + helm diff
+15:11:49 [INFO] 
+📦 EPIC: [QA] Testing Strategy & E2E
+15:11:50 [INFO]   ✅ Created Epic [HF-87]: [QA] Testing Strategy & E2E
+15:11:50 [INFO]   📖 Story: Test Infrastructure Setup (Sprint 2)
+15:11:51 [INFO]   ✅ Created Story [HF-88]: Test Infrastructure Setup
+15:11:51 [INFO]      🔧 Task: Настроить testcontainers-go для integration тестов (Sprint 2)
+15:11:52 [INFO]   ✅ Created Sub-task [HF-89]: Настроить testcontainers-go для integration тестов
+15:11:52 [INFO]      🔧 Task: Настроить Playwright E2E с мобильным viewport (Sprint 2)
+15:11:53 [INFO]   ✅ Created Sub-task [HF-90]: Настроить Playwright E2E с мобильным viewport
+15:11:54 [INFO]   📖 Story: E2E Test Scenarios (Playwright) (Sprint 6)
+15:11:55 [INFO]   ✅ Created Story [HF-91]: E2E Test Scenarios (Playwright)
+15:11:55 [INFO]      🔧 Task: E2E: auth.spec.ts — регистрация, логин, recovery (Sprint 6)
+15:11:56 [INFO]   ✅ Created Sub-task [HF-92]: E2E: auth.spec.ts — регистрация, логин, recovery
+15:11:56 [INFO]      🔧 Task: E2E: board.spec.ts + habits.spec.ts + mobile.spec.ts (Sprint 6)
+15:11:57 [INFO]   ✅ Created Sub-task [HF-93]: E2E: board.spec.ts + habits.spec.ts + mobile.spec.ts
+15:11:57 [INFO] 
+📦 EPIC: [PWA] PWA, Mobile Polish & Documentation
+15:11:58 [INFO]   ✅ Created Epic [HF-94]: [PWA] PWA, Mobile Polish & Documentation
+15:11:59 [INFO]   📖 Story: PWA & Mobile UX Polish (Sprint 6)
+15:11:59 [INFO]   ✅ Created Story [HF-95]: PWA & Mobile UX Polish
+15:12:00 [INFO]      🔧 Task: PWA: service worker, manifest, иконки (Sprint 6)
+15:12:01 [INFO]   ✅ Created Sub-task [HF-96]: PWA: service worker, manifest, иконки
+15:12:01 [INFO]      🔧 Task: Bottom Navigation + safe-area-inset + mobile touch UX (Sprint 6)
+15:12:02 [INFO]   ✅ Created Sub-task [HF-97]: Bottom Navigation + safe-area-inset + mobile touch UX
+15:12:03 [INFO]      🔧 Task: WCAG 2.1 AA Accessibility Audit + тёмная/светлая тема (Sprint 7)
+15:12:04 [INFO]   ✅ Created Sub-task [HF-98]: WCAG 2.1 AA Accessibility Audit + тёмная/светлая тема
+15:12:04 [INFO]   📖 Story: Documentation & Final Polish (Sprint 7)
+15:12:05 [INFO]   ✅ Created Story [HF-99]: Documentation & Final Polish
+15:12:05 [INFO]      🔧 Task: README.md — полная документация проекта (Sprint 7)
+15:12:06 [INFO]   ✅ Created Sub-task [HF-100]: README.md — полная документация проекта
+15:12:07 [INFO]      🔧 Task: runbook.md + OpenAPI YAML (docs/api.yaml) (Sprint 7)
+15:12:08 [INFO]   ✅ Created Sub-task [HF-101]: runbook.md + OpenAPI YAML (docs/api.yaml)
+15:12:08 [INFO]      🔧 Task: seed-db.sh + setup-dev.sh + финальный smoke test (Sprint 7)
+15:12:09 [INFO]   ✅ Created Sub-task [HF-102]: seed-db.sh + setup-dev.sh + финальный smoke test
+
